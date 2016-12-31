@@ -20,6 +20,12 @@ export async function create(ctx) {
     let body = ctx.request.body;
     try {
         ctx.body = await Coordinate.create(body)
+        ctx.app.io.emit('packet', {
+            x: body.x,
+            y: body.y,
+            status: body.status,
+            time: body.time,
+        })
         ctx.status = 201
     } catch(error) {
         ctx.throw(400, error)
