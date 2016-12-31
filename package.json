@@ -4,10 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "build-js": "browserify public/js/app.js -o public/build/app.js",
-    "watch-js": "nodemon -e js -w public/js -x 'npm run build-js'",
-    "build": "npm run build-js",
-    "watch": "npm run watch-js",
+    "build": "browserify public/js/app.js -o public/build/app.js -v",
+    "watch": "./node_modules/.bin/watchify public/js/app.js -o public/build/app.js -v",
     "start": "node_modules/.bin/nodemon",
     "test": "node_modules/.bin/mocha"
   },
@@ -24,6 +22,7 @@
     "babel-preset-es2015": "^6.14.0",
     "babel-register": "^6.14.0",
     "babelify": "^7.3.0",
+    "browserify": "^13.1.1",
     "ejs": "^2.5.2",
     "koa": "^2.0.0",
     "koa-body": "2.0.0",
@@ -40,6 +39,7 @@
     "socket.io": "^1.7.2",
     "socketio": "^1.0.0",
     "swig": "^1.4.2",
+    "watchify": "^3.8.0",
     "winston": "^2.3.0",
     "winston-koa-logger": "^0.0.2"
   },

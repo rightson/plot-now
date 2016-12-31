@@ -14629,8 +14629,9 @@ return paper;
 'use strict';
 
 var paper = require('paper');
-
 var socket = io();
+var canvas = document.getElementById("canvas");
+
 socket.on('connect', function (data) {
     console.log('socket.io connected');
     socket.emit('packet', {
@@ -14641,51 +14642,39 @@ socket.on('connect', function (data) {
 paper.install(window);
 window.onload = function () {
     paper.setup('canvas');
-
-    var lastPoint = null;
-    socket.on('packet', function (packet) {
-        console.log('packet: ' + JSON.stringify(packet));
-        new Path.Circle(new Point(80, 50), 30);
-        var point = getCenterize(packet);
-        if (!lastPoint) {
-            console.log('origin: ' + JSON.stringify(point));
-            drawPoint(point);
-            lastPoint = point;
-        } else {
-            console.log('lineTo: ' + JSON.stringify(point));
-            drawPoint(point);
-            //drawPath(lastPoint, point)
-            lastPoint = null;
-        }
-    });
+    window.onresize();
 };
+window.onresize = function () {
+    if (canvas.width != window.innerWidth) {
+        canvas.style.width = window.innerWidth + 'px';
+    }
+    if (canvas.height != window.innerHeight) {
+        canvas.style.height = window.innerHeight + 'px';
+    }
+};
+
+var origin = { x: 400, y: 200 };
+var fromPt = { x: 400, y: 200 };
+socket.on('packet', function (packet) {
+    console.log('packet: ' + JSON.stringify(packet));
+    var newPt = getPoint(packet);
+    var toPt = {
+        x: origin.x + newPt.x,
+        y: origin.y + newPt.y
+    };
+    var path = new Path.Line(fromPt, toPt);
+    path.strokeColor = 'green';
+    fromPt = {
+        x: toPt.x,
+        y: toPt.y
+    };
+});
+
 function getPoint(coordinate) {
     return {
         x: parseInt(coordinate.x),
         y: parseInt(coordinate.y)
     };
-}
-
-function getCenterize(coordinate) {
-    return {
-        x: parseInt(coordinate.x) + 400,
-        y: parseInt(coordinate.y) + 400
-    };
-}
-
-function drawPoint(point) {
-    var circle = new Path.Circle(new Point(point.x, point.y), 2);
-    circle.fillColor = 'red';
-}
-
-function drawPath(origin, lineTo) {
-    var path = new paper.Path();
-    console.log('Painting origin: ' + JSON.stringify(origin) + ' lineTo:' + JSON.stringify(lineTo));
-    path.strokeColor = 'red';
-    var start = new paper.Point(origin.x, origin.y);
-    path.moveTo(start);
-    path.lineTo(start.add([lineTo.x, lineTo.y]));
-    paper.view.draw();
 }
 
 },{"paper":2}]},{},[3]);
