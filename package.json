@@ -1,6 +1,6 @@
 {
-  "name": "koa-boilerplate",
-  "version": "2.0.0",
+  "name": "plot-now",
+  "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
